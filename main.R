@@ -22,7 +22,7 @@ downloadDay <- function(year,day)
 {
   short_year <- substr(year, 3, 4)
   
-  zipLink <- paste0(
+  link <- paste0(
     "ftp://cddis.gsfc.nasa.gov//pub/gps/data/daily/",
     year,
     "/brdc/brdc",
@@ -32,8 +32,10 @@ downloadDay <- function(year,day)
     "n.Z"
   )
   
-  zippedData <- readLines(zipLink)
-  data <- unzip(zippedData)
+  download.file(link, "temp.Z")
+  system("7za e -y temp.Z")
+  data <- readLines("temp")
+  data
 }
 
 fr <- downloadDay(2002,175)
