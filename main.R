@@ -5,8 +5,11 @@
 
 # Input variables
 # year  -- requested year
-
-year <- "2002"
+# dir   -- catalog with download data
+# 7zip  -- 7-zip command to extract files
+year <- "2011"
+myDir <- "src/"
+cmd <- paste0("7za e -o", myDir, " -y ")
 
 # Example link: ftp://cddis.gsfc.nasa.gov/gps/data/daily/2002/175/02n/brdc1750.02n.Z
 # Example link 2: ftp://cddis.gsfc.nasa.gov//pub/gps/data/daily/2000/brdc/brdc0010.00n.Z
@@ -22,20 +25,42 @@ downloadDay <- function(year,day)
 {
   short_year <- substr(year, 3, 4)
   
-  link <- paste0(
-    "ftp://cddis.gsfc.nasa.gov//pub/gps/data/daily/",
-    year,
-    "/brdc/brdc",
-    day,
+  filename <- paste0(
+    "brdc",
+    formatC(day, width=3, flag="0"),
     "0.",
     short_year,
     "n.Z"
   )
   
-  download.file(link, "temp.Z")
-  system("7za e -y temp.Z")
-  data <- readLines("temp")
-  data
+  link <- paste0(
+    "ftp://cddis.gsfc.nasa.gov//pub/gps/data/daily/",
+    year,
+    "/brdc/",
+    filename
+  )
+  
+  if (!file.exists(myDir))
+  {
+    dir.create(myDir)
+  }
+  
+  fullpath <- paste0(myDir,filename)
+  
+  download.file(link, fullpath)
+  
+  cmd <- paste0(
+    cmd,
+    fullpath
+  )
+print(cmd)
+  system(cmd)
 }
 
-fr <- downloadDay(2002,175)
+downloadData <- function()
+{
+  for (i in 1:365)
+    downloadDay(year, i)
+}
+
+downloadData()
