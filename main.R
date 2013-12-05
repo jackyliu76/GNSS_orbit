@@ -63,4 +63,24 @@ downloadData <- function()
     downloadDay(year, i)
 }
 
-downloadData()
+# Temporary parameters
+file <- "src/brdc0010.11n"
+prn <- 4
+
+extractData <- function(file,prn)
+{
+  d <- readLines(file)
+  for (i in 1:100)
+  {
+    if (grepl("END OF HEADER", d[i]))
+    {
+      break
+    }
+  }
+  print(i)
+  data
+}
+
+# downloadData()
+d <- extractData(file,prn)
+
