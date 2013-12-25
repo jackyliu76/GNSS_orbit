@@ -150,22 +150,37 @@ for (file in list.files(dir))
     # Mean anomaly
     n0 <- sqrt(mu)/recOrb[2,4]**3                   # Step 1.
 #     tem <- dt - deltaUTC  # Step 2.
-#     t <- tem - recOrb[3,1]                          # Step 3.
+#    t <- deltaUTC - recOrb[3,1]                          # Step 3.
+    t <- recOrb[7,1] - recOrb[3,1]
+    if (t > 604800)
+    {
+      t <- t - 604800
+    } 
+    
     n <- n0 - recOrb[1,3]                           # Step 4.
-#     anml <- recOrb[1,4] + n * t                     # Step 5.
+    anml <- recOrb[1,4] + n * t                  # Step 5.
     
     axis <- append(axis, recOrb[2,4])
     ecc <- append(ecc, recOrb[2,2])
     
     incl <- append(incl, recOrb[4,1])
     lgtd <- append(lgtd, recOrb[3,3])
+    
+    # Argument of periapsis
+#     arg <- recOrb[4,3] + t * (recOrb[4,4]- omega_e) - omega_e * recOrb[3,1]
     argp <- append(argp, recOrb[4,3])
     
     # Mean anomaly calculation
-    anmly <- append(anmly, n)
+    anmly <- append(anmly, recOrb[1,4])
     
     break
   }
 }
 
 
+plot(time,anmly,xlab="Days",ylab="M0, rad",main="Mean anomaly at epoch\nPRN 3 YEAR 2011",pch=20, cex=1)
+# plot(time,axis**2,xlab="Days",ylab="A, meters",main="Semimajor axis\nPRN 3 YEAR 2011",pch=20, cex=1)
+# plot(time,ecc,xlab="Days",ylab="e",main="Eccentricity\nPRN 3 YEAR 2011",pch=20, cex=1)
+# plot(time,incl,xlab="Days",ylab="i0, rad",main="Inclination at epoch\nPRN 3 YEAR 2011",pch=20, cex=1)
+# plot(time[1:30],lgtd[1:30],xlab="Days",ylab="Long. of the asc. node, rad",main="Longitude of the ascending node at epoch\nPRN 3 YEAR 2011 JANUARY",pch=20, cex=1)
+# plot(time,argp,xlab="Days",ylab="Arg. of periapsis, rad",main="Argument of periapsis\nPRN 3 YEAR 2011",pch=20, cex=1)
