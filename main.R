@@ -9,7 +9,8 @@
 # 7zip  -- 7-zip command to extract files
 year <- "2011"
 myDir <- "src/"
-cmd <- paste0("7za e -o", myDir, " -y ")
+# cmd <- paste0("7za e -o", myDir, " -y ")
+cmd <- paste0("7za e -o", myDir, "brdc", " -y ")
 
 # Example link: ftp://cddis.gsfc.nasa.gov/gps/data/daily/2002/175/02n/brdc1750.02n.Z
 # Example link 2: ftp://cddis.gsfc.nasa.gov//pub/gps/data/daily/2000/brdc/brdc0010.00n.Z
@@ -47,7 +48,7 @@ downloadDay <- function(year,day)
   
   fullpath <- paste0(myDir,filename)
   
-  download.file(link, fullpath)
+  #download.file(link, fullpath)
   
   cmd <- paste0(
     cmd,
@@ -69,18 +70,26 @@ prn <- 4
 
 extractData <- function(file,prn)
 {
-  d <- readLines(file)
+  rnxData <- readLines(file)
+  nLines <- length(rnxData)
+  print("nLInes: ", nLines)
+  
+  # Skipping a header
   for (i in 1:100)
+    if (grepl("END OF HEADER", rnxData[i])) break
+  cLine <- i + 1
+  
+  # Reading each PRN
+  while (cLine <= nLines)
   {
-    if (grepl("END OF HEADER", d[i]))
-    {
-      break
-    }
+    # Establishing connection
+    buffer <- rnxData[cLine]
+    con <- textConnection(buffer)
+    
+    # Formatted RINEX reading (Fortran) 
   }
-  print(i)
-  data
+  rnxData
 }
 
-# downloadData()
-d <- extractData(file,prn)
-
+downloadData()
+# d <- extractData(file,prn)
